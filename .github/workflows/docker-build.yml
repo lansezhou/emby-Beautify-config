@@ -3,6 +3,8 @@ name: Versioned Docker Build
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'app.py'  # 只有 app.py 文件变化时才触发
 
 env:
   REGISTRY: docker.io
