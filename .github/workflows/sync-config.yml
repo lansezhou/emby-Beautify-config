@@ -8,21 +8,40 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      # 1. Checkout the repository
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 必须添加，否则无法获取git历史
+          fetch-depth: 0  # 必须添加，否则无法获取 git 历史
 
+      # 2. 设置 SSH 密钥用于 GitHub
+      - name: Set up SSH key for GitHub
+        run: |
+          # 创建 SSH 配置目录
+          mkdir -p ~/.ssh
+          
+          # 将 GitHub Secrets 中的 SSH 私钥写入 id_rsa 文件
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          
+          # 设置 id_rsa 文件的权限，防止权限问题
+          chmod 600 ~/.ssh/id_rsa
+          
+          # 添加 GitHub 的公钥到 known_hosts，防止第一次连接时出现警告
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          
+          # 测试 SSH 连接是否成功
+          ssh -T git@github.com
+
+      # 3. Push 到公共仓库
       - name: Push to Public Repo
         uses: cpina/github-action-push-to-another-repository@main
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # 确保密钥传递
         with:
-          source-directory: 'config.yaml'
-          destination-github-username: 'lansezhou'
-          destination-repository-name: 'emby-Beautify-config'
-          user-email: 'allixogiqs79@gmail.com'  # 必须添加
-          user-name: 'GitHub Actions Bot'       # 必须添加
-          target-branch: 'main'
-          commit-message: 'Auto sync config.yaml from private repo'
-          # files参数已废弃，改用source-directory
+          source-directory: 'config.yaml'  # 要同步的文件
+          destination-github-username: 'lansezhou'  # 目标 GitHub 用户名
+          destination-repository-name: 'emby-Beautify-config'  # 目标仓库名
+          user-email: 'allixogiqs79@gmail.com'  # Git 提交的邮箱
+          user-name: 'GitHub Actions Bot'  # Git 提交的用户名
+          target-branch: 'main'  # 目标分支
+          commit-message: 'Auto sync config.yaml from private repo'  # 提交信息
