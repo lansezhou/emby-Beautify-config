@@ -1,14 +1,12 @@
-name: Build and Push Docker Image
+name: Versioned Docker Build
 
 on:
   push:
-    branches: [ "main" ]  # 代码推送到 main 分支时触发
-  pull_request:
     branches: [ "main" ]
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/lanse-emby  # 替换为你的镜像名称
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/lanse-emby
 
 jobs:
   build-and-push:
@@ -16,6 +14,32 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      # 获取最新版本号（从Docker Hub或文件）
+      - name: Get next version
+        id: version
+        run: |
+          # 从文件读取当前版本（如不存在则初始化为1.0）
+          if [ -f version.txt ]; then
+            CURRENT_VERSION=$(cat version.txt)
+            MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+            MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+            NEW_MINOR=$((MINOR + 1))
+            NEW_VERSION="$MAJOR.$NEW_MINOR"
+          else
+            NEW_VERSION="1.0"
+          fi
+          
+          # 保存新版本号
+          echo $NEW_VERSION > version.txt
+          git add version.txt
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git commit -m "Bump version to $NEW_VERSION" || echo "No changes to commit"
+          
+          # 输出新版本号
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "::set-output name=version::$NEW_VERSION"
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -30,4 +54,4 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.NEW_VERSION }}
