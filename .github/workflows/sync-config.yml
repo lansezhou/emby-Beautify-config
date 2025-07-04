@@ -35,7 +35,7 @@ jobs:
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}  # 确保密钥传递
         with:
-          source-directory: 'config.yaml'  # 要同步的文件
+          source-directory: '.'  # 将源目录指向根目录，假设 config.yaml 就在根目录
           destination-github-username: 'lansezhou'  # 目标 GitHub 用户名
           destination-repository-name: 'emby-Beautify-config'  # 目标仓库名
           user-email: 'allixogiqs79@gmail.com'  # Git 提交的邮箱
