@@ -2,21 +2,27 @@ name: Sync Config to Public Repo
 on:
   push:
     paths:
-      - 'config.yaml'  # 当config.yaml变更时触发
+      - 'config.yaml'  # 仅当config.yaml变更时触发
+
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 必须添加，否则无法获取git历史
+
       - name: Push to Public Repo
         uses: cpina/github-action-push-to-another-repository@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
-          source-directory: '.'
+          source-directory: '.'  # 当前仓库根目录
           destination-github-username: 'lansezhou'
-          destination-repository-name: 'emby-Beautify-config'  # 公开仓库名
-          target-branch: main
-          files: |
-            config.yaml
+          destination-repository-name: 'emby-Beautify-config'
+          user-email: 'allixogiqs79@gmail.com'  # 必须添加
+          user-name: 'GitHub Actions Bot'       # 必须添加
+          target-branch: 'main'
+          commit-message: 'Auto sync config.yaml from private repo'
+          # files参数已废弃，改用source-directory
