@@ -2,7 +2,7 @@ name: Sync Config to Public Repo
 on:
   push:
     paths:
-      - 'config.yaml'  # 仅当config.yaml变更时触发
+      - 'config.yaml'  # 仅当 config.yaml 变更时触发
 
 jobs:
   sync:
@@ -28,9 +28,6 @@ jobs:
           
           # 添加 GitHub 的公钥到 known_hosts，防止第一次连接时出现警告
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-          
-          # 测试 SSH 连接是否成功
-          ssh -T git@github.com
 
       # 3. Push 到公共仓库
       - name: Push to Public Repo
