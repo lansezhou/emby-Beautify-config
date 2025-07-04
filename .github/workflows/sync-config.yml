@@ -1,0 +1,22 @@
+name: Sync Config to Public Repo
+on:
+  push:
+    paths:
+      - 'config.yaml'  # 当config.yaml变更时触发
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Push to Public Repo
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          source-directory: '.'
+          destination-github-username: 'lansezhou'
+          destination-repository-name: 'emby-Beautify-config'  # 公开仓库名
+          target-branch: main
+          files: |
+            config.yaml
