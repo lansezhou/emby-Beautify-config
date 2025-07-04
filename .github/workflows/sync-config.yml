@@ -18,7 +18,7 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
-          source-directory: '.'  # 当前仓库根目录
+          source-directory: 'config.yaml'
           destination-github-username: 'lansezhou'
           destination-repository-name: 'emby-Beautify-config'
           user-email: 'allixogiqs79@gmail.com'  # 必须添加
