@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/lanse-emby
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/emby-beautify
 
 jobs:
   build-and-push:
