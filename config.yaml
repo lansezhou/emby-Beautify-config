@@ -60,7 +60,7 @@ notification_templates:
 
       {% if vote_average %}🌟 评分：{{ vote_average }}/10{% endif %}
       🙋 帝君：👑𝓤𝓼𝓮𝓻 » {{ user_name }} « 𝓤𝓼𝓮𝓻👑
-      📱 设备：{{ device_name }}
+      📱 座机：{{ device_name }}
       🌐 IP：{{ ip_address }}{% if ip_location %}（{{ ip_location }}）{% endif %}
       🔄 进度：{{ percentage }}%
       🕒 时间：{{ now_time }}
