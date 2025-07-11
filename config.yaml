@@ -56,9 +56,7 @@ notification_templates:
       📺 类型：电视剧
       {% else %}
       🎥 类型：{{ media_type }}
-      {% endif %}
-
-      {% if vote_average %}🌟 评分：{{ vote_average }}/10{% endif %}
+      {% endif %}{% if vote_average %}🌟 评分：{{ vote_average }}/10{% endif %}
       🙋 帝君：👑𝓤𝓼𝓮𝓻 » {{ user_name }} « 𝓤𝓼𝓮𝓻👑
       📱 坐骑：{{ device_name }}
       🌐 IP：{{ ip_address }}{% if ip_location %}（{{ ip_location }}）{% endif %}
